@@ -1,15 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>Karton – Mahkeme Eşleştirme Oyunu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Mobilde uygulama gibi açılsın -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temel Hak ve Hürriyetler - Eşleştirme Oyunu</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -28,7 +22,7 @@
       max-width: 520px;
       min-height: 100vh;
       margin: 0 auto;
-      padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px calc(env(safe-area-inset-bottom, 0px) + 20px);
+      padding: 16px 16px 20px;
       background: linear-gradient(150deg, rgba(11,15,22,0.98), rgba(12,18,30,0.96));
       border-radius: 0;
       box-shadow: 0 0 0 rgba(0,0,0,0.0);
@@ -46,8 +40,8 @@
     }
 
     h1 {
-      margin: 0 0 4px;
       font-size: 20px;
+      margin: 0 0 6px;
       text-align: center;
       color: #f9fafb;
       letter-spacing: 0.04em;
@@ -57,62 +51,77 @@
       text-align: center;
       font-size: 13px;
       color: #9ca3af;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .subtitle strong {
       color: #e5e7eb;
     }
 
-    .top-info {
+    .stats {
       display: flex;
-      justify-content: center;
-      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
     }
 
-    .info-pill {
-      padding: 5px 9px;
+    .stat {
+      padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(55,65,81,0.9);
       font-size: 11px;
-      color: #cbd5f5;
       display: flex;
       align-items: center;
       gap: 4px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(55,65,81,0.9);
+      color: #cbd5f5;
     }
 
-    .info-pill .val {
-      font-weight: 600;
+    .stat.good {
+      border-color: rgba(34,197,94,0.9);
+      box-shadow: 0 0 10px rgba(34,197,94,0.4);
+    }
+
+    .stat.bad {
+      border-color: rgba(239,68,68,0.9);
+      box-shadow: 0 0 10px rgba(239,68,68,0.4);
+    }
+
+    .stat.total {
+      border-color: rgba(59,130,246,0.9);
+      box-shadow: 0 0 10px rgba(59,130,246,0.4);
+    }
+
+    .badge {
+      font-weight: 700;
+      font-size: 14px;
       color: #e5e7eb;
     }
 
-    .question-card {
+    .card {
       background: linear-gradient(135deg, #131a29 0%, #090d14 100%);
       border-radius: 16px;
       padding: 12px 12px 14px;
+      margin-bottom: 16px;
       border: 1px solid rgba(75,85,99,0.7);
-      margin-bottom: 12px;
       box-shadow: inset 0 0 18px rgba(0,0,0,0.55);
       position: relative;
       overflow: hidden;
     }
 
-    /* Hafif aura efekti */
-    .question-card::before {
+    .card::before {
       content: "";
       position: absolute;
       inset: -40%;
       background:
-        radial-gradient(circle at top, rgba(59,130,246,0.10), transparent 60%),
-        radial-gradient(circle at bottom, rgba(147,51,234,0.10), transparent 60%);
-      opacity: 0.85;
+        radial-gradient(circle at top, rgba(59,130,246,0.12), transparent 60%),
+        radial-gradient(circle at bottom, rgba(147,51,234,0.12), transparent 60%);
+      opacity: 0.9;
       pointer-events: none;
     }
 
-    .question-card::after {
+    .card::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -124,218 +133,141 @@
       pointer-events: none;
     }
 
-    .question-label {
+    .card-label {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: #9ca3af;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       position: relative;
       z-index: 1;
     }
 
-    /* Havalı, neon, animasyonlu karton adı */
-    .question-text {
-      position: relative;
-      z-index: 1;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 0.03em;
-      text-align: center;
-
-      background: linear-gradient(120deg, #e5e7eb, #60a5fa, #a855f7, #e5e7eb);
-      background-size: 220% 220%;
-      -webkit-background-clip: text;
-      color: transparent;
-
-      text-shadow:
-        0 0 8px rgba(37,99,235,0.45),
-        0 0 18px rgba(59,130,246,0.35);
-
-      animation:
-        glowPulse 2.4s ease-in-out infinite,
-        textShine 6s linear infinite;
-      transition: transform 0.18s ease-out, opacity 0.18s ease-out;
-    }
-
-    @keyframes glowPulse {
-      0%   { text-shadow: 0 0 6px rgba(59,130,246,0.4), 0 0 16px rgba(37,99,235,0.3); transform: scale(1); }
-      50%  { text-shadow: 0 0 10px rgba(129,140,248,0.8), 0 0 22px rgba(59,130,246,0.7); transform: scale(1.03); }
-      100% { text-shadow: 0 0 6px rgba(59,130,246,0.4), 0 0 16px rgba(37,99,235,0.3); transform: scale(1); }
-    }
-
-    @keyframes textShine {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .fade-in-up {
-      animation: fadeInUp 0.25s ease-out;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Yeni kart veya tam isabette tek seferlik pop */
-    .question-text.pop {
-      animation:
-        popOnce 0.35s ease-out,
-        glowPulse 2.4s ease-in-out infinite,
-        textShine 6s linear infinite;
-    }
-
-    @keyframes popOnce {
-      0%   { transform: scale(0.9); opacity: 0; }
-      40%  { transform: scale(1.08); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .question-note {
-      font-size: 11px;
-      color: #cbd5f5;
-      margin-top: 4px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Patlama efekti */
-    .burst {
-      position: absolute;
-      inset: -10px;
-      background:
-        radial-gradient(circle at center,
-          rgba(248,250,252,0.9),
-          rgba(59,130,246,0.45) 35%,
-          transparent 65%);
-      mix-blend-mode: screen;
-      pointer-events: none;
-      animation: burst 0.5s ease-out forwards;
-      z-index: 0;
-    }
-
-    @keyframes burst {
-      0%   { transform: scale(0.4); opacity: 0.95; }
-      60%  { transform: scale(1.1); opacity: 0.7; }
-      100% { transform: scale(1.5); opacity: 0; }
-    }
-
-    .hint {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-
-    .hint strong {
+    .hak-text {
+      font-size: 16px;
+      line-height: 1.5;
       color: #e5e7eb;
+      white-space: pre-wrap;
+      position: relative;
+      z-index: 1;
     }
 
-    .unit-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .buttons {
+      display: flex;
+      flex-direction: column;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    .unit-btn {
-      border: 1px solid rgba(60,70,95,0.7);
-      border-radius: 999px;
-      padding: 9px 10px;
-      font-size: 12px;
+    .choice-btn {
+      width: 100%;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      cursor: pointer;
       background: rgba(20,25,40,0.92);
       color: #e5e7eb;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 6px;
+      border: 1px solid rgba(60,70,95,0.7);
       transition:
         background 0.12s ease,
         border-color 0.12s ease,
         box-shadow 0.12s ease,
         transform 0.08s ease,
-        opacity 0.12s ease;
-      min-height: 36px;
+        color 0.12s ease;
       backdrop-filter: blur(6px);
     }
 
-    .unit-btn span.short {
-      font-weight: 600;
-    }
-
-    .unit-btn span.full {
-      font-size: 10px;
-      color: #9ca3af;
-    }
-
-    .unit-btn:hover {
+    .choice-btn:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 14px rgba(0,0,0,0.8);
       border-color: rgba(59,130,246,0.9);
     }
 
-    .unit-btn.correct-selected {
+    .choice-main {
+      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+
+    .choice-sub {
+      font-size: 11px;
+      opacity: 0.8;
+      color: #9ca3af;
+    }
+
+    .choice-btn.correct {
       background: radial-gradient(circle at top, #16a34a, #166534);
       border-color: rgba(74,222,128,1);
       box-shadow: 0 0 16px rgba(34,197,94,0.9);
       color: #ecfdf3;
-      transform: translateY(-1px);
     }
 
-    .unit-btn.correct-reveal {
-      background: radial-gradient(circle at top, #22c55e, #15803d);
-      border-color: rgba(190,242,100,0.95);
-      box-shadow: 0 0 20px rgba(190,242,100,0.8);
-      color: #ecfdf3;
-    }
-
-    .unit-btn.dimmed {
-      opacity: 0.45;
-    }
-
-    .unit-btn.wrong-flash {
+    .choice-btn.wrong {
       background: linear-gradient(145deg, #5e0f0f, #7f1d1d);
       border-color: rgba(239,68,68,1);
       box-shadow: 0 0 16px rgba(239,68,68,0.8);
+      color: #fee2e2;
+      animation: shake 0.25s;
     }
 
     @keyframes shake {
-      0%   { transform: translateX(0); }
-      20%  { transform: translateX(-4px); }
-      40%  { transform: translateX(4px); }
-      60%  { transform: translateX(-4px); }
-      80%  { transform: translateX(4px); }
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-2px); }
       100% { transform: translateX(0); }
     }
 
-    .shake {
-      animation: shake 0.4s ease;
+    .feedback {
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.4;
+      display: none;
+      margin-bottom: 12px;
+    }
+
+    .feedback.good {
+      display: block;
+      background: rgba(22,163,74,0.14);
+      border: 1px solid rgba(74,222,128,0.6);
+      color: #bbf7d0;
+    }
+
+    .feedback.bad {
+      display: block;
+      background: rgba(185,28,28,0.18);
+      border: 1px solid rgba(248,113,113,0.7);
+      color: #fecaca;
+    }
+
+    .feedback strong {
+      font-weight: 600;
     }
 
     .controls {
       display: flex;
+      justify-content: flex-end;
+      gap: 8px;
       flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 8px;
-      margin-bottom: 10px;
+      margin-top: 4px;
     }
 
-    .btn-small {
-      border: 1px solid rgba(55,65,81,0.9);
+    .btn {
       border-radius: 999px;
-      padding: 10px 18px;
+      padding: 8px 14px;
       font-size: 13px;
-      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(55,65,81,0.9);
       background: radial-gradient(circle at top, #020617, #020617);
       color: #e5e7eb;
-      cursor: pointer;
-      min-width: 150px;
-      text-align: center;
       transition:
         background 0.15s ease,
         border-color 0.15s ease,
@@ -343,481 +275,358 @@
         transform 0.1s ease;
     }
 
-    .btn-small.primary {
+    .btn-primary {
       border-color: rgba(59,130,246,1);
       background: linear-gradient(120deg, #1d4ed8, #7c3aed);
       box-shadow: 0 0 14px rgba(59,130,246,0.6);
       color: #f9fafb;
-      animation: btnPulse 2.2s infinite;
     }
 
-    @keyframes btnPulse {
-      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.7); }
-      70%  { box-shadow: 0 0 0 16px rgba(59,130,246,0); }
-      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+    .btn-secondary {
+      border-color: rgba(75,85,99,0.9);
+      background: radial-gradient(circle at top, #020617, #020617);
+      color: #e5e7eb;
     }
 
-    .btn-small:hover {
+    .btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.9);
       border-color: rgba(96,165,250,0.95);
     }
 
-    .message {
-      margin-top: 6px;
-      font-size: 12px;
-      text-align: center;
-      color: #a5b4fc;
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
     }
 
-    .message span {
-      display: block;
-      margin-top: 2px;
-      font-size: 11px;
-      color: #9ca3af;
+    .finished {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 8px;
+      color: #cbd5f5;
+    }
+
+    /* Sonraki soru butonunu yine gizli tutuyoruz (otomatik geçiş var) */
+    #next-btn {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+      }
+      .app {
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+        padding: 16px 12px 20px;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      .subtitle {
+        font-size: 12px;
+      }
+      .hak-text {
+        font-size: 15px;
+      }
+      .choice-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+      }
+      .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-<div class="app">
-  <h1>Karton – Mahkeme Eşleştirme</h1>
-  <div class="subtitle">
-    Ekrandaki kartonun <strong>hangi mahkeme/birimlerde</strong> olduğunu tahmin et.
-  </div>
-
-  <div class="top-info">
-    <div class="info-pill">
-      🧠 Toplam karton: <span class="val" id="info-total">0</span>
+  <div class="app">
+    <h1>Temel Hak ve Hürriyetler</h1>
+    <div class="subtitle">
+      Her bir hakkın <strong>hangi statü grubuna</strong> girdiğini tahmin et; yanlış yaptıkların birkaç tur sonra tekrar gelsin 🎯
     </div>
-    <div class="info-pill">
-      ✅ Tam isabet: <span class="val" id="info-perfect">0</span>
+
+    <div class="stats">
+      <div class="stat good">
+        ✔ Doğru:
+        <span class="badge" id="stat-correct">0</span>
+      </div>
+      <div class="stat bad">
+        ✖ Yanlış:
+        <span class="badge" id="stat-wrong">0</span>
+      </div>
+      <div class="stat total">
+        🔄 Toplam:
+        <span class="badge" id="stat-total">0</span>
+      </div>
     </div>
-    <div class="info-pill">
-      🔁 Soru: <span class="val" id="info-question">0</span>
+
+    <div class="card">
+      <div class="card-label">Hak / Özgürlük</div>
+      <div class="hak-text" id="hak-text">
+        Yükleniyor...
+      </div>
+    </div>
+
+    <div class="buttons" id="buttons"></div>
+
+    <div id="feedback" class="feedback"></div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="next-btn" disabled>🔁 Sonraki soru</button>
+      <button class="btn btn-secondary" id="reset-btn">🔄 Baştan başla</button>
+    </div>
+
+    <div class="finished" id="finished-text" style="display:none;">
+      🎉 Tüm hakları en az bir kez (ve yanlış yaptıklarını tekrar tekrar) gördün. İstersen yeniden başlayıp pekiştirebilirsin.
     </div>
   </div>
 
-  <div class="question-card">
-    <div class="question-label">Karton</div>
-    <div class="question-text fade-in-up" id="question-text">
-      Başlamak için bir karton yükleniyor...
-    </div>
-    <div class="question-note">
-      Bu kartonun bulunduğu mahkeme/birimleri aşağıdan seç. Yanlış sekme <strong>titreyerek</strong> uyarır.
-    </div>
-  </div>
-
-  <div class="hint">
-    Karton hangi başlıklarda varsa o sekmeleri işaretle. Emin değilsen önce tahmin et, sonra <strong>Doğruları Göster</strong>.
-  </div>
-
-  <div class="unit-grid" id="unit-grid">
-    <button class="unit-btn" data-unit="bam_cbs">
-      <span class="short">BAM CBS</span>
-      <span class="full">Bölge Adliye CBS</span>
-    </button>
-    <button class="unit-btn" data-unit="adli_cbs">
-      <span class="short">Adli CBS</span>
-      <span class="full">Adli Yargı Cumhuriyet Başsavcılığı</span>
-    </button>
-    <button class="unit-btn" data-unit="bam_ceza">
-      <span class="short">BAM Ceza</span>
-      <span class="full">Bölge Adliye Ceza Daireleri</span>
-    </button>
-    <button class="unit-btn" data-unit="ilk_ceza">
-      <span class="short">İlk Ceza</span>
-      <span class="full">İlk Derece Ceza Mah./Hâkimlik</span>
-    </button>
-    <button class="unit-btn" data-unit="bam_hukuk">
-      <span class="short">BAM Hukuk</span>
-      <span class="full">Bölge Adliye Hukuk Daireleri</span>
-    </button>
-    <button class="unit-btn" data-unit="ilk_hukuk">
-      <span class="short">İlk Hukuk</span>
-      <span class="full">İlk Derece Hukuk Mahkemeleri</span>
-    </button>
-    <button class="unit-btn" data-unit="bam_komisyon">
-      <span class="short">BAM Kom.</span>
-      <span class="full">Bölge Adliye Komisyonu</span>
-    </button>
-    <button class="unit-btn" data-unit="ilk_komisyon">
-      <span class="short">İlk Kom.</span>
-      <span class="full">İlk Derece Adalet Komisyonu</span>
-    </button>
-  </div>
-
-  <div class="controls">
-    <button class="btn-small primary" id="btn-show">Doğruları Göster</button>
-    <button class="btn-small" id="btn-next">Sonraki Karton</button>
-  </div>
-
-  <div class="message" id="message"></div>
-</div>
-
-<script>
-  // Tüm birimlerin karton listeleri
-  const UNITS = {
-    bam_cbs: {
-      key: "bam_cbs",
-      title: "BAM CBS",
-      items: [
-        "Esas kaydı",
-        "İstinabe kaydı",
-        "Suç eşyası kaydı",
-        "Yakalama kaydı",
-        "Temyiz kaydı",
-        "Cumhuriyet savcısı bilgi kaydı",
-        "Kitaplık kaydı",
-        "Dava nakil istekleri kaydı",
-        "Tebliğname kaydı",
-        "Uyuşmazlığın giderilmesi başvuru kaydı",
-        "Zimmet kaydı",
-        "Muhabere kaydı",
-        "Disiplin soruşturma kaydı",
-        "Teftiş kaydı",
-        "Bilgi edinme kaydı"
-      ]
-    },
-    adli_cbs: {
-      key: "adli_cbs",
-      title: "Adli Yargı CBS",
-      items: [
-        "Esas kaydı",
-        "Soruşturma kaydı",
-        "İstinabe kaydı",
-        "Suç eşyası kaydı",
-        "Yakalama kaydı",
-        "Temyiz kaydı",
-        "Cumhuriyet savcısı bilgi kaydı",
-        "Kitaplık kaydı",
-        "Ölü muayenesi ve otopsi kaydı",
-        "Bilirkişi kaydı",
-        "Tercüman kaydı",
-        "Uzlaşma kaydı",
-        "Önödeme kaydı",
-        "SEGBİS kaydı",
-        "Ailenin korunması kararlarının kaydı",
-        "İnfaz kaydı",
-        "Denetimli serbestlik kaydı",
-        "Hapis ile tazyik kaydı",
-        "Tazyik hapsi kaydı",
-        "Disiplin hapsi kaydı",
-        "İdari yaptırım kararlarının kaydı",
-        "Zimmet kaydı",
-        "Muhabere kaydı"
-      ]
-    },
-    bam_ceza: {
-      key: "bam_ceza",
-      title: "BAM Ceza Dairesi",
-      items: [
-        "Esas kaydı",
-        "Duruşma ve keşif günleri kaydı",
-        "Karar kaydı",
-        "SEGBİS kaydı",
-        "İstinabe kaydı",
-        "Temyiz kaydı",
-        "Değişik işler kaydı",
-        "Taşra temyiz kaydı",
-        "Dava nakil istekleri kaydı",
-        "Dağıtım kaydı",
-        "Uyuşmazlığın giderilmesi başvuru kaydı",
-        "Zimmet kaydı",
-        "Muhabere kaydı",
-        "Disiplin soruşturma kaydı",
-        "Teftiş kaydı",
-        "Bilgi edinme kaydı"
-      ]
-    },
-    ilk_ceza: {
-      key: "ilk_ceza",
-      title: "İlk Derece Ceza Mah./Hâkimlik",
-      items: [
-        "Esas kaydı",
-        "Duruşma günleri kaydı",
-        "Keşif günleri kaydı",
-        "Karar kaydı",
-        "SEGBİS kaydı",
-        "İstinabe kaydı",
-        "Temyiz kaydı",
-        "Değişik işler kaydı",
-        "İddianamenin değerlendirilmesi kaydı",
-        "Uzlaşma kaydı",
-        "Önödeme kaydı",
-        "Bilirkişilik kaydı",
-        "Tercüman kaydı",
-        "İstinaf kaydı",
-        "İnfaz hâkimliği kaydı",
-        "Koruyucu ve destekleyici tedbir kararları kaydı",
-        "Sorgu kaydı",
-        "Muhabere kaydı",
-        "Zimmet kaydı"
-      ]
-    },
-    bam_hukuk: {
-      key: "bam_hukuk",
-      title: "BAM Hukuk Dairesi",
-      items: [
-        "Vezne kaydı",
-        "Esas kaydı",
-        "Karar kaydı",
-        "İstinabe kaydı",
-        "Temyiz kaydı",
-        "Dava nakil istekleri kaydı",
-        "Uyuşmazlığın giderilmesi başvuru kaydı",
-        "Dağıtım kaydı",
-        "Değişik işler kaydı",
-        "Posta mutemet kaydı",
-        "Zimmet kaydı",
-        "Taşra temyiz kaydı",
-        "Muhabere kaydı",
-        "Kıymetli evrak ve eşya kaydı",
-        "Disiplin soruşturma kaydı",
-        "Harç tahsil müzekkeresi kaydı",
-        "Teftiş kaydı",
-        "Sosyal inceleme-görüşme raporları kaydı",
-        "Bilgi edinme kaydı",
-        "Duruşma ve keşif günleri kaydı"
-      ]
-    },
-    ilk_hukuk: {
-      key: "ilk_hukuk",
-      title: "İlk Derece Hukuk Mahkemeleri",
-      items: [
-        "Esas kaydı",
-        "Karar kaydı",
-        "İstinabe kaydı",
-        "Temyiz kaydı",
-        "Değişik işler kaydı",
-        "Posta mutemet kaydı",
-        "Taşra istinaf veya temyiz kaydı",
-        "Kıymetli evrak ve eşya kaydı",
-        "Harç tahsil müzekkeresi kaydı",
-        "Sosyal inceleme-görüşme kaydı",
-        "Duruşma günleri kaydı",
-        "Keşif günleri kaydı",
-        "İstinaf kaydı",
-        "Ortaklığın giderilmesi satış paraları kasa kaydı",
-        "Ortaklığın giderilmesi dosyalarına mahsus esas kaydı",
-        "Tereke esas kaydı",
-        "Tereke karar kaydı",
-        "Tereke kasa kaydı",
-        "Mirası ret kaydı",
-        "Posta mutemet kaydı",
-        "Tevzi kaydı",
-        "Harç tahsil müzekkeresi zimmet kaydı",
-        "Vakıf tescil kaydı",
-        "Vesayet adı kaydı",
-        "Muhabere kaydı",
-        "Hakem kararları saklama kaydı",
-        "Bilgi edinme kaydı"
-      ]
-    },
-    bam_komisyon: {
-      key: "bam_komisyon",
-      title: "BAM Komisyonu",
-      items: [
-        "Özlük kaydı",
-        "Karar kaydı",
-        "Personel nöbet kaydı",
-        "Genelge ve görüş kaydı",
-        "Duyuru kaydı",
-        "Fazla ve esnek çalışma kaydı",
-        "Hâkim bilgi kaydı",
-        "Komisyon gündem kaydı",
-        "Bilirkişi listesi kaydı",
-        "Sınav kaydı",
-        "Dava işleri kaydı",
-        "Zimmet kaydı",
-        "Muhabere kaydı",
-        "Disiplin soruşturma kaydı",
-        "Teftiş kaydı",
-        "Bilgi edinme kaydı"
-      ]
-    },
-    ilk_komisyon: {
-      key: "ilk_komisyon",
-      title: "İlk Derece Adalet Komisyonu",
-      items: [
-        "Özlük kaydı",
-        "Karar kaydı",
-        "Personel nöbet kaydı",
-        "Genelge ve görüş kaydı",
-        "Duyuru kaydı",
-        "Fazla ve esnek çalışma kaydı",
-        "Hâkim bilgi kaydı",
-        "Komisyon gündem kaydı",
-        "Bilirkişi ve tercüman listesi kaydı",
-        "Sınav kaydı",
-        "Dava işleri kaydı",
-        "Hâkim ve savcı adayları kaydı",
-        "Avukat stajyerleri kaydı",
-        "Lojman kaydı",
-        "Tasdik şerhi kaydı",
-        "Zimmet kaydı",
-        "Muhabere kaydı",
-        "Disiplin soruşturma kaydı",
-        "Teftiş kaydı",
-        "Bilgi edinme kaydı"
-      ]
-    }
-  };
-
-  const questionTextEl = document.getElementById("question-text");
-  const questionCardEl = document.querySelector(".question-card");
-  const unitButtons = Array.from(document.querySelectorAll(".unit-btn"));
-  const btnShow = document.getElementById("btn-show");
-  const btnNext = document.getElementById("btn-next");
-  const msgEl = document.getElementById("message");
-  const infoTotalEl = document.getElementById("info-total");
-  const infoPerfectEl = document.getElementById("info-perfect");
-  const infoQuestionEl = document.getElementById("info-question");
-
-  // karton adı -> hangi unit'lerde var
-  const cardToUnits = new Map();
-
-  function buildCardMap() {
-    Object.values(UNITS).forEach(unit => {
-      unit.items.forEach(name => {
-        if (!cardToUnits.has(name)) {
-          cardToUnits.set(name, new Set());
-        }
-        cardToUnits.get(name).add(unit.key);
-      });
-    });
-  }
-
-  buildCardMap();
-
-  const allCards = Array.from(cardToUnits.keys());
-  infoTotalEl.textContent = String(allCards.length);
-
-  let questionOrder = [];
-  let currentIndex = 0;
-  let currentCard = null;
-  let perfectCount = 0;
-  let questionCount = 0;
-
-  function shuffle(array) {
-    const a = [...array];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  function prepareQuestions() {
-    questionOrder = shuffle(allCards);
-    currentIndex = 0;
-  }
-
-  function resetButtonStates() {
-    unitButtons.forEach(btn => {
-      btn.classList.remove(
-        "correct-selected",
-        "correct-reveal",
-        "dimmed",
-        "wrong-flash",
-        "shake"
-      );
-      btn.dataset.selected = "false";
-    });
-  }
-
-  function showNewCard() {
-    if (questionOrder.length === 0 || currentIndex >= questionOrder.length) {
-      prepareQuestions();
-    }
-    currentCard = questionOrder[currentIndex];
-    currentIndex++;
-    questionCount++;
-    infoQuestionEl.textContent = String(questionCount);
-
-    resetButtonStates();
-    msgEl.textContent = "";
-
-    questionTextEl.classList.remove("fade-in-up", "pop");
-    void questionTextEl.offsetWidth; // trigger reflow
-    questionTextEl.textContent = currentCard;
-    questionTextEl.classList.add("fade-in-up", "pop");
-  }
-
-  function handleUnitClick(btn) {
-    if (!currentCard) return;
-
-    const unitKey = btn.dataset.unit;
-    const correctUnits = cardToUnits.get(currentCard) || new Set();
-
-    if (btn.classList.contains("correct-selected")) return;
-
-    if (correctUnits.has(unitKey)) {
-      btn.classList.add("correct-selected");
-      btn.dataset.selected = "true";
-    } else {
-      btn.classList.add("shake", "wrong-flash");
-      setTimeout(() => {
-        btn.classList.remove("shake", "wrong-flash");
-      }, 420);
-    }
-  }
-
-  function triggerExplosion() {
-    if (!questionCardEl) return;
-    const burst = document.createElement("div");
-    burst.className = "burst";
-    questionCardEl.appendChild(burst);
-    questionTextEl.classList.remove("pop");
-    void questionTextEl.offsetWidth;
-    questionTextEl.classList.add("pop");
-    setTimeout(() => {
-      burst.remove();
-    }, 520);
-  }
-
-  function showAnswer() {
-    if (!currentCard) return;
-    const correctUnits = cardToUnits.get(currentCard) || new Set();
-
-    let allCorrectChosen = true;
-
-    unitButtons.forEach(btn => {
-      const key = btn.dataset.unit;
-      const isCorrect = correctUnits.has(key);
-      const isSelected = btn.classList.contains("correct-selected");
-
-      if (isCorrect && !isSelected) {
-        btn.classList.add("correct-reveal");
-        allCorrectChosen = false;
-      } else if (!isCorrect && isSelected) {
-        btn.classList.add("dimmed");
-        allCorrectChosen = false;
-      } else if (!isCorrect && !isSelected) {
-        btn.classList.add("dimmed");
+  <script>
+    // 3 ana kategori (butonlar)
+    const categories = [
+      {
+        key: "kisi",
+        main: "Kişi hak ve ödevleri",
+        sub: "Negatif statü – koruyucu haklar"
+      },
+      {
+        key: "sosyal",
+        main: "Sosyal ve ekonomik hak ve ödevler",
+        sub: "Pozitif statü – isteme hakları"
+      },
+      {
+        key: "siyasi",
+        main: "Siyasi hak ve ödevler",
+        sub: "Aktif statü – katılma hakları"
       }
-    });
+    ];
 
-    if (allCorrectChosen) {
-      perfectCount++;
-      infoPerfectEl.textContent = String(perfectCount);
-      msgEl.innerHTML =
-        "🎉 Tam isabet! Bu kartonun olduğu tüm başlıkları doğru seçtin.<span>Patlamayı görüp yeni kartona geç!</span>";
-      triggerExplosion();
-    } else {
-      msgEl.innerHTML =
-        "📝 Bazı yerler eksik ya da fazla. Yeşil parlayan sekmeler bu kartonun geçtiği başlıklar.<span>Bunları not al, sonra yeni karta geç.</span>";
+    // Hak / özgürlük listesi
+    const items = [
+      // KİŞİ HAK VE ÖDEVLERİ – NEGATİF STATÜ
+      { text: "Kişi dokunulmazlığı.", category: "kisi" },
+      { text: "Zorla çalıştırma yasağı.", category: "kisi" },
+      { text: "Kişi hürriyeti ve güvenliği.", category: "kisi" },
+      { text: "Özel hayatın gizliliği.", category: "kisi" },
+      { text: "Konut dokunulmazlığı.", category: "kisi" },
+      { text: "Haberleşme hürriyeti.", category: "kisi" },
+      { text: "Yerleşme ve seyahat hürriyeti.", category: "kisi" },
+      { text: "Din ve vicdan hürriyeti.", category: "kisi" },
+      { text: "Düşünce ve kanaat hürriyeti.", category: "kisi" },
+      { text: "Düşünceyi açıklama ve yayma hürriyeti.", category: "kisi" },
+      { text: "Bilim ve sanat hürriyeti.", category: "kisi" },
+      { text: "Basın hürriyeti.", category: "kisi" },
+      { text: "Süreli ve süresiz yayın hakkı.", category: "kisi" },
+      { text: "Basın araçlarının korunması.", category: "kisi" },
+      { text: "Düzeltme ve cevap hakkı.", category: "kisi" },
+      { text: "Dernek kurma hürriyeti.", category: "kisi" },
+      { text: "Toplantı ve gösteri yürüyüşü düzenleme hakkı.", category: "kisi" },
+      { text: "Mülkiyet hakkı.", category: "kisi" },
+      { text: "Hak arama hürriyeti.", category: "kisi" },
+      { text: "Kanuni hâkim güvencesi.", category: "kisi" },
+      { text: "İspat hakkı.", category: "kisi" },
+      { text: "Temel hak ve hürriyetlerin korunması.", category: "kisi" },
+
+      // SOSYAL VE EKONOMİK HAK VE ÖDEVLER – POZİTİF STATÜ
+      { text: "Ailenin korunması ve çocuk hakları.", category: "sosyal" },
+      { text: "Eğitim ve öğrenim hakkı ve ödevi.", category: "sosyal" },
+      { text: "Kıyılardan yararlanma.", category: "sosyal" },
+      { text: "Toprak mülkiyeti.", category: "sosyal" },
+      { text: "Kamulaştırma.", category: "sosyal" },
+      { text: "Devletleştirme ve özelleştirme.", category: "sosyal" },
+      { text: "Çalışma ve sözleşme hürriyeti.", category: "sosyal" },
+      { text: "Çalışma hakkı ve ödevi.", category: "sosyal" },
+      { text: "Sendika kurma hakkı.", category: "sosyal" },
+      { text: "Toplu iş sözleşmesi hakkı.", category: "sosyal" },
+      { text: "Grev hakkı ve lokavt.", category: "sosyal" },
+      { text: "Ücrette adalet sağlanması.", category: "sosyal" },
+      { text: "Sağlık hizmetleri ve çevrenin korunması.", category: "sosyal" },
+      { text: "Konut hakkı.", category: "sosyal" },
+      { text: "Sporun geliştirilmesi.", category: "sosyal" },
+      { text: "Sosyal güvenlik hakkı.", category: "sosyal" },
+      { text: "Sanatın ve sanatçının korunması.", category: "sosyal" },
+
+      // SİYASİ HAK VE ÖDEVLER – AKTİF STATÜ
+      { text: "Türk vatandaşlığı.", category: "siyasi" },
+      { text: "Seçme ve seçilme hakkı.", category: "siyasi" },
+      { text: "Siyasi faaliyette bulunma hakkı.", category: "siyasi" },
+      { text: "Parti kurma, partilere girme ve ayrılma.", category: "siyasi" },
+      { text: "Kamu hizmetine girme hakkı.", category: "siyasi" },
+      { text: "Mal bildirimi.", category: "siyasi" },
+      { text: "Vatan hizmeti.", category: "siyasi" },
+      { text: "Vergi ödevi.", category: "siyasi" },
+      { text: "Dilekçe hakkı.", category: "siyasi" },
+      { text: "Bilgi edinme hakkı.", category: "siyasi" },
+      { text: "Kamu denetçisine başvurma hakkı.", category: "siyasi" }
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
     }
-  }
 
-  unitButtons.forEach(btn => {
-    btn.addEventListener("click", () => handleUnitClick(btn));
-  });
+    const hakTextEl = document.getElementById("hak-text");
+    const buttonsContainer = document.getElementById("buttons");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("next-btn");
+    const resetBtn = document.getElementById("reset-btn");
+    const finishedText = document.getElementById("finished-text");
 
-  btnShow.addEventListener("click", showAnswer);
-  btnNext.addEventListener("click", showNewCard);
+    const statCorrect = document.getElementById("stat-correct");
+    const statWrong = document.getElementById("stat-wrong");
+    const statTotal = document.getElementById("stat-total");
 
-  prepareQuestions();
-  showNewCard();
-</script>
+    const REASK_OFFSET = 4;
+
+    let upcoming = [];
+    let currentPos = 0;
+    let hasAnswered = false;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answeredCount = 0;
+
+    function initGame() {
+      const indices = [...items.keys()];
+      shuffle(indices);
+      upcoming = indices.slice();
+      currentPos = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      answeredCount = 0;
+      hasAnswered = false;
+      statCorrect.textContent = "0";
+      statWrong.textContent = "0";
+      statTotal.textContent = "0";
+      feedbackEl.style.display = "none";
+      feedbackEl.className = "feedback";
+      finishedText.style.display = "none";
+      if (nextBtn) nextBtn.disabled = true;
+      renderCurrentHak();
+      renderButtons();
+    }
+
+    function getCurrentItem() {
+      return items[upcoming[currentPos]];
+    }
+
+    function renderCurrentHak() {
+      const item = getCurrentItem();
+      hakTextEl.textContent = item.text;
+    }
+
+    function renderButtons() {
+      buttonsContainer.innerHTML = "";
+      categories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.dataset.category = cat.key;
+
+        const mainSpan = document.createElement("span");
+        mainSpan.className = "choice-main";
+        mainSpan.textContent = cat.main;
+
+        const subSpan = document.createElement("span");
+        subSpan.className = "choice-sub";
+        subSpan.textContent = cat.sub;
+
+        btn.appendChild(mainSpan);
+        btn.appendChild(subSpan);
+
+        btn.addEventListener("click", () => handleChoice(btn));
+        buttonsContainer.appendChild(btn);
+      });
+    }
+
+    function labelForKey(key) {
+      const info = categories.find(c => c.key === key);
+      if (!info) return key;
+      return `${info.main} – ${info.sub}`;
+    }
+
+    function handleChoice(btn) {
+      if (hasAnswered) return;
+
+      hasAnswered = true;
+      const selectedCat = btn.dataset.category;
+      const item = getCurrentItem();
+      const correctCat = item.category;
+
+      const allBtns = buttonsContainer.querySelectorAll(".choice-btn");
+      allBtns.forEach(b => b.disabled = true);
+
+      if (selectedCat === correctCat) {
+        btn.classList.add("correct");
+        correctCount++;
+        statCorrect.textContent = String(correctCount);
+
+        const correctInfo = categories.find(c => c.key === correctCat);
+        feedbackEl.className = "feedback good";
+        feedbackEl.innerHTML =
+          `✅ <strong>Doğru!</strong> Bu hak <strong>${correctInfo.main}</strong> grubuna aittir.<br>` +
+          `<em>${correctInfo.sub}</em>`;
+      } else {
+        btn.classList.add("wrong");
+        const correctBtn = Array.from(allBtns).find(
+          b => b.dataset.category === correctCat
+        );
+        if (correctBtn) correctBtn.classList.add("correct");
+        wrongCount++;
+        statWrong.textContent = String(wrongCount);
+
+        const yourLabel = labelForKey(selectedCat);
+        const correctLabel = labelForKey(correctCat);
+
+        feedbackEl.className = "feedback bad";
+        feedbackEl.innerHTML =
+          `❌ <strong>Yanlış seçim:</strong> Sen <strong>${yourLabel}</strong> dedin.<br>` +
+          `✅ <strong>Doğru cevap:</strong> <strong>${correctLabel}</strong>.`;
+
+        const currentItemIndex = upcoming[currentPos];
+        const targetPos = Math.min(currentPos + REASK_OFFSET, upcoming.length);
+        upcoming.splice(targetPos, 0, currentItemIndex);
+      }
+
+      feedbackEl.style.display = "block";
+
+      setTimeout(() => {
+        goNext();
+      }, 2000);
+    }
+
+    function goNext() {
+      answeredCount++;
+      statTotal.textContent = String(answeredCount);
+
+      if (currentPos < upcoming.length - 1) {
+        currentPos++;
+        hasAnswered = false;
+        feedbackEl.style.display = "none";
+        feedbackEl.className = "feedback";
+        renderCurrentHak();
+        renderButtons();
+        if (nextBtn) nextBtn.disabled = true;
+      } else {
+        finishedText.style.display = "block";
+        feedbackEl.style.display = "block";
+        feedbackEl.className = "feedback good";
+        feedbackEl.innerHTML =
+          `🎉 <strong>Bitti!</strong> Tüm hakları ve yanlış yaptıklarını birkaç kez gördün.<br>` +
+          `✔ Doğru: <strong>${correctCount}</strong> &nbsp;&nbsp; ✖ Yanlış: <strong>${wrongCount}</strong><br>` +
+          `🔄 Toplam cevaplanan: <strong>${answeredCount}</strong>`;
+      }
+    }
+
+    if (nextBtn) nextBtn.addEventListener("click", goNext);
+    resetBtn.addEventListener("click", initGame);
+
+    initGame();
+  </script>
 </body>
 </html>
