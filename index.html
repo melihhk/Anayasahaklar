@@ -1,0 +1,549 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temel Hak ve Hürriyetler - Eşleştirme Oyunu</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef1ff, #f7fbff);
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 16px 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 6px;
+      text-align: center;
+      color: #222b55;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #667;
+      margin-bottom: 16px;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f2f3ff;
+      color: #333;
+    }
+
+    .stat.good { background: #e4fbe9; color: #146c2e; }
+    .stat.bad  { background: #ffe8e6; color: #a32121; }
+    .stat.total{ background: #eaf3ff; color: #204a9b; }
+
+    .badge {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #f9f9ff;
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      margin-bottom: 16px;
+      border: 1px solid #e0e4ff;
+    }
+
+    .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #889;
+      margin-bottom: 6px;
+    }
+
+    .hak-text {
+      font-size: 14px;
+      line-height: 1.4;
+      color: #222b55;
+      white-space: pre-wrap;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .choice-btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      cursor: pointer;
+      background: #eef1ff;
+      color: #20244a;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease, color 0.1s ease;
+    }
+
+    .choice-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+
+    .choice-main {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .choice-sub {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .choice-btn.correct {
+      background: #dffbe7;
+      color: #0f6a2e;
+      box-shadow: 0 3px 10px rgba(0,128,0,0.2);
+    }
+
+    .choice-btn.wrong {
+      background: #ffe2df;
+      color: #8c1515;
+      box-shadow: 0 3px 10px rgba(200,0,0,0.2);
+      animation: shake 0.25s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+
+    .feedback {
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.4;
+      display: none;
+      margin-bottom: 12px;
+    }
+
+    .feedback.good {
+      display: block;
+      background: #e4fbe9;
+      border: 1px solid #b7ecc6;
+      color: #145729;
+    }
+
+    .feedback.bad {
+      display: block;
+      background: #ffe7e4;
+      border: 1px solid #f0b9b0;
+      color: #8a1919;
+    }
+
+    .feedback strong {
+      font-weight: 600;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: #4a63ff;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #e0e4ff;
+      color: #1d2b6a;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .finished {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 8px;
+      color: #37436e;
+    }
+
+    /* Sonraki soru butonunu gizli tutuyoruz (otomatik geçiş var) */
+    #next-btn {
+      display: none;
+    }
+
+    /* 📱 Mobilde tam ekran hisli olsun */
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+      }
+      .app {
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+        padding: 16px 12px 20px;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      .subtitle {
+        font-size: 12px;
+      }
+      .hak-text {
+        font-size: 15px;
+      }
+      .choice-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+      }
+      .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Temel Hak ve Hürriyetler</h1>
+    <div class="subtitle">
+      Her bir hakkın <strong>hangi statü grubuna</strong> girdiğini tahmin et; yanlış yaptıkların birkaç tur sonra tekrar gelsin 🎯
+    </div>
+
+    <div class="stats">
+      <div class="stat good">
+        ✔ Doğru:
+        <span class="badge" id="stat-correct">0</span>
+      </div>
+      <div class="stat bad">
+        ✖ Yanlış:
+        <span class="badge" id="stat-wrong">0</span>
+      </div>
+      <div class="stat total">
+        🔄 Toplam:
+        <span class="badge" id="stat-total">0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Hak / Özgürlük</div>
+      <div class="hak-text" id="hak-text">
+        Yükleniyor...
+      </div>
+    </div>
+
+    <div class="buttons" id="buttons"></div>
+
+    <div id="feedback" class="feedback"></div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="next-btn" disabled>🔁 Sonraki soru</button>
+      <button class="btn btn-secondary" id="reset-btn">🔄 Baştan başla</button>
+    </div>
+
+    <div class="finished" id="finished-text" style="display:none;">
+      🎉 Tüm hakları en az bir kez (ve yanlış yaptıklarını tekrar tekrar) gördün. İstersen yeniden başlayıp pekiştirebilirsin.
+    </div>
+  </div>
+
+  <script>
+    // 3 ana kategori (butonlar)
+    const categories = [
+      {
+        key: "kisi",
+        main: "Kişi hak ve ödevleri",
+        sub: "Negatif statü – koruyucu haklar"
+      },
+      {
+        key: "sosyal",
+        main: "Sosyal ve ekonomik hak ve ödevler",
+        sub: "Pozitif statü – isteme hakları"
+      },
+      {
+        key: "siyasi",
+        main: "Siyasi hak ve ödevler",
+        sub: "Aktif statü – katılma hakları"
+      }
+    ];
+
+    // Hak / özgürlük listesi (fotoğraftaki tabloya göre)
+    const items = [
+      // KİŞİ HAK VE ÖDEVLERİ – NEGATİF STATÜ
+      { text: "Kişi dokunulmazlığı.", category: "kisi" },
+      { text: "Zorla çalıştırma yasağı.", category: "kisi" },
+      { text: "Kişi hürriyeti ve güvenliği.", category: "kisi" },
+      { text: "Özel hayatın gizliliği.", category: "kisi" },
+      { text: "Konut dokunulmazlığı.", category: "kisi" },
+      { text: "Haberleşme hürriyeti.", category: "kisi" },
+      { text: "Yerleşme ve seyahat hürriyeti.", category: "kisi" },
+      { text: "Din ve vicdan hürriyeti.", category: "kisi" },
+      { text: "Düşünce ve kanaat hürriyeti.", category: "kisi" },
+      { text: "Düşünceyi açıklama ve yayma hürriyeti.", category: "kisi" },
+      { text: "Bilim ve sanat hürriyeti.", category: "kisi" },
+      { text: "Basın hürriyeti.", category: "kisi" },
+      { text: "Süreli ve süresiz yayın hakkı.", category: "kisi" },
+      { text: "Basın araçlarının korunması.", category: "kisi" },
+      { text: "Düzeltme ve cevap hakkı.", category: "kisi" },
+      { text: "Dernek kurma hürriyeti.", category: "kisi" },
+      { text: "Toplantı ve gösteri yürüyüşü düzenleme hakkı.", category: "kisi" },
+      { text: "Mülkiyet hakkı.", category: "kisi" },
+      { text: "Hak arama hürriyeti.", category: "kisi" },
+      { text: "Kanuni hâkim güvencesi.", category: "kisi" },
+      { text: "İspat hakkı.", category: "kisi" },
+      { text: "Temel hak ve hürriyetlerin korunması.", category: "kisi" },
+
+      // SOSYAL VE EKONOMİK HAK VE ÖDEVLER – POZİTİF STATÜ
+      { text: "Ailenin korunması ve çocuk hakları.", category: "sosyal" },
+      { text: "Eğitim ve öğrenim hakkı ve ödevi.", category: "sosyal" },
+      { text: "Kıyılardan yararlanma.", category: "sosyal" },
+      { text: "Toprak mülkiyeti.", category: "sosyal" },
+      { text: "Kamulaştırma.", category: "sosyal" },
+      { text: "Devletleştirme ve özelleştirme.", category: "sosyal" },
+      { text: "Çalışma ve sözleşme hürriyeti.", category: "sosyal" },
+      { text: "Çalışma hakkı ve ödevi.", category: "sosyal" },
+      { text: "Sendika kurma hakkı.", category: "sosyal" },
+      { text: "Toplu iş sözleşmesi hakkı.", category: "sosyal" },
+      { text: "Grev hakkı ve lokavt.", category: "sosyal" },
+      { text: "Ücrette adalet sağlanması.", category: "sosyal" },
+      { text: "Sağlık hizmetleri ve çevrenin korunması.", category: "sosyal" },
+      { text: "Konut hakkı.", category: "sosyal" },
+      { text: "Sporun geliştirilmesi.", category: "sosyal" },
+      { text: "Sosyal güvenlik hakkı.", category: "sosyal" },
+      { text: "Sanatın ve sanatçının korunması.", category: "sosyal" },
+
+      // SİYASİ HAK VE ÖDEVLER – AKTİF STATÜ
+      { text: "Türk vatandaşlığı.", category: "siyasi" },
+      { text: "Seçme ve seçilme hakkı.", category: "siyasi" },
+      { text: "Siyasi faaliyette bulunma hakkı.", category: "siyasi" },
+      { text: "Parti kurma, partilere girme ve ayrılma.", category: "siyasi" },
+      { text: "Kamu hizmetine girme hakkı.", category: "siyasi" },
+      { text: "Mal bildirimi.", category: "siyasi" },
+      { text: "Vatan hizmeti.", category: "siyasi" },
+      { text: "Vergi ödevi.", category: "siyasi" },
+      { text: "Dilekçe hakkı.", category: "siyasi" },
+      { text: "Bilgi edinme hakkı.", category: "siyasi" },
+      { text: "Kamu denetçisine başvurma hakkı.", category: "siyasi" }
+    ];
+
+    // Karıştırma fonksiyonu
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    const hakTextEl = document.getElementById("hak-text");
+    const buttonsContainer = document.getElementById("buttons");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("next-btn");
+    const resetBtn = document.getElementById("reset-btn");
+    const finishedText = document.getElementById("finished-text");
+
+    const statCorrect = document.getElementById("stat-correct");
+    const statWrong = document.getElementById("stat-wrong");
+    const statTotal = document.getElementById("stat-total");
+
+    const REASK_OFFSET = 4; // Yanlış soruyu 4 sıra sonra tekrar sor
+
+    let upcoming = [];       // Sıradaki soru indexleri
+    let currentPos = 0;      // upcoming içindeki pozisyon
+    let hasAnswered = false;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answeredCount = 0;   // Kullanıcının cevapladığı soru sayısı (tekrarlar dahil)
+
+    function initGame() {
+      const indices = [...items.keys()];
+      shuffle(indices);
+      upcoming = indices.slice();  // Başlangıçta tüm sorular karışık
+      currentPos = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      answeredCount = 0;
+      hasAnswered = false;
+      statCorrect.textContent = "0";
+      statWrong.textContent = "0";
+      statTotal.textContent = "0";
+      feedbackEl.style.display = "none";
+      feedbackEl.className = "feedback";
+      finishedText.style.display = "none";
+      if (nextBtn) nextBtn.disabled = true;
+      renderCurrentHak();
+      renderButtons();
+    }
+
+    function getCurrentItem() {
+      return items[upcoming[currentPos]];
+    }
+
+    function renderCurrentHak() {
+      const item = getCurrentItem();
+      hakTextEl.textContent = item.text;
+    }
+
+    function renderButtons() {
+      buttonsContainer.innerHTML = "";
+      categories.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.dataset.category = cat.key;
+
+        const mainSpan = document.createElement("span");
+        mainSpan.className = "choice-main";
+        mainSpan.textContent = cat.main;
+
+        const subSpan = document.createElement("span");
+        subSpan.className = "choice-sub";
+        subSpan.textContent = cat.sub;
+
+        btn.appendChild(mainSpan);
+        btn.appendChild(subSpan);
+
+        btn.addEventListener("click", () => handleChoice(btn));
+        buttonsContainer.appendChild(btn);
+      });
+    }
+
+    function labelForKey(key) {
+      const info = categories.find(c => c.key === key);
+      if (!info) return key;
+      return `${info.main} – ${info.sub}`;
+    }
+
+    function handleChoice(btn) {
+      if (hasAnswered) return; // aynı soruda ikinci seçime izin yok
+
+      hasAnswered = true;
+      const selectedCat = btn.dataset.category;
+      const item = getCurrentItem();
+      const correctCat = item.category;
+
+      const allBtns = buttonsContainer.querySelectorAll(".choice-btn");
+      allBtns.forEach(b => b.disabled = true);
+
+      if (selectedCat === correctCat) {
+        btn.classList.add("correct");
+        correctCount++;
+        statCorrect.textContent = String(correctCount);
+
+        const correctInfo = categories.find(c => c.key === correctCat);
+        feedbackEl.className = "feedback good";
+        feedbackEl.innerHTML =
+          `✅ <strong>Doğru!</strong> Bu hak <strong>${correctInfo.main}</strong> grubuna aittir.<br>` +
+          `<em>${correctInfo.sub}</em>`;
+      } else {
+        btn.classList.add("wrong");
+        const correctBtn = Array.from(allBtns).find(
+          b => b.dataset.category === correctCat
+        );
+        if (correctBtn) correctBtn.classList.add("correct");
+        wrongCount++;
+        statWrong.textContent = String(wrongCount);
+
+        const yourLabel = labelForKey(selectedCat);
+        const correctLabel = labelForKey(correctCat);
+
+        feedbackEl.className = "feedback bad";
+        feedbackEl.innerHTML =
+          `❌ <strong>Yanlış seçim:</strong> Sen <strong>${yourLabel}</strong> dedin.<br>` +
+          `✅ <strong>Doğru cevap:</strong> <strong>${correctLabel}</strong>.`;
+
+        // Yanlış soruyu birkaç soru sonra tekrar sor
+        const currentItemIndex = upcoming[currentPos];
+        const targetPos = Math.min(currentPos + REASK_OFFSET, upcoming.length);
+        upcoming.splice(targetPos, 0, currentItemIndex);
+      }
+
+      feedbackEl.style.display = "block";
+
+      // 2 saniye sonra otomatik sonraki soruya geç
+      setTimeout(() => {
+        goNext();
+      }, 2000);
+    }
+
+    function goNext() {
+      answeredCount++;
+      statTotal.textContent = String(answeredCount);
+
+      if (currentPos < upcoming.length - 1) {
+        currentPos++;
+        hasAnswered = false;
+        feedbackEl.style.display = "none";
+        feedbackEl.className = "feedback";
+        renderCurrentHak();
+        renderButtons();
+        if (nextBtn) nextBtn.disabled = true;
+      } else {
+        // Oyun bitti
+        finishedText.style.display = "block";
+        feedbackEl.style.display = "block";
+        feedbackEl.className = "feedback good";
+        feedbackEl.innerHTML =
+          `🎉 <strong>Bitti!</strong> Tüm hakları ve yanlış yaptıklarını birkaç kez gördün.<br>` +
+          `✔ Doğru: <strong>${correctCount}</strong> &nbsp;&nbsp; ✖ Yanlış: <strong>${wrongCount}</strong><br>` +
+          `🔄 Toplam cevaplanan: <strong>${answeredCount}</strong>`;
+      }
+    }
+
+    if (nextBtn) nextBtn.addEventListener("click", goNext);
+    resetBtn.addEventListener("click", initGame);
+
+    initGame();
+  </script>
+</body>
+</html>
